@@ -1,8 +1,7 @@
 from django.db.models.fields import CharField
-from django.utils.encoding import force_unicode
 
 
-class Nationality(object):
+class Nationality:
     """
     Class represents a nationality.
 
@@ -20,17 +19,17 @@ class Nationality(object):
         """
         self.code = code
 
-    def __unicode__(self):
-        return force_unicode(self.code or '')
+    def __str__(self):
+        return self.code
 
     def __eq__(self, other):
-        return self.code == force_unicode(other)
+        return self.code == other
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __cmp__(self, other):
-        return cmp(self.code, force_unicode(other))
+    # def __cmp__(self, other):
+    #     return cmp(self.code, other)
 
     def __hash__(self):
         return hash(self.code)
@@ -68,7 +67,7 @@ class NationalityDescriptor(object):
         return Nationality(code=instance.__dict__[self.field.name])
 
     def __set__(self, instance, value):
-        instance.__dict__[self.field.name] = force_unicode(value)
+        instance.__dict__[self.field.name] = value
 
 
 class NationalityField(CharField):
@@ -80,26 +79,26 @@ class NationalityField(CharField):
     descriptor_class = NationalityDescriptor
 
     def __init__(self, *args, **kwargs):
-        from nationalities import NATIONALITIES
+        from .nationalities import NATIONALITIES
         kwargs.setdefault('max_length', 2)
         kwargs.setdefault('choices', NATIONALITIES)
-        super(CharField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return 'CharField'
 
     def contribute_to_class(self, cls, name):
-        super(NationalityField, self).contribute_to_class(cls, name)
+        super().contribute_to_class(cls, name)
         setattr(cls, self.name, self.descriptor_class(self))
 
     def get_prep_lookup(self, lookup_type, value):
         if hasattr(value, 'code'):
             value = value.code
-        return super(NationalityField, self).get_prep_lookup(lookup_type, value)
+        return super().get_prep_lookup(lookup_type, value)
 
     def pre_save(self, *args, **kwargs):
         "Returns field's value just before saving."
-        value = super(CharField, self).pre_save(*args, **kwargs)
+        value = super().pre_save(*args, **kwargs)
         return self.get_prep_value(value)
 
     def get_prep_value(self, value):
@@ -107,7 +106,7 @@ class NationalityField(CharField):
         # Convert the Nationality to unicode for database insertion.
         if value is None:
             return None
-        return unicode(value)
+        return value
 
 
 # If south is installed, ensure that NationalityField will be introspected just
