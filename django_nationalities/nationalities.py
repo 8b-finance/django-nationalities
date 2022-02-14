@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 # source: http://www.englishclub.com/vocabulary/world-countries-nationality.htm
@@ -119,6 +119,7 @@ NATIONALITIES = (
     ('NO', _(u'Norwegian')),
     ('OM', _(u'Omani')),
     ('PK', _(u'Pakistani')),
+    ('PS', _('Palestinian')),
     ('PA', _(u'Panamanian')),
     ('PG', _(u'Guinean')),
     ('PY', _(u'Paraguayan')),
